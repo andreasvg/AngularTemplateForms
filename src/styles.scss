@@ -1,1 +1,13 @@
-/* You can add global styles to this file, and also import other style files */
+/* @import "./variables";
+
+$theme-colors: (
+  primary: $avg-primary,
+  danger: $avg-danger,
+  warning: $avg-warning,
+  success: $avg-success,
+  info: $avg-info,
+  dark: $avg-dark,
+  light: $avg-light
+); */
+
+@import "node_modules/bootstrap/scss/bootstrap";
