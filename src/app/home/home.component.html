@@ -1,8 +1,20 @@
 <h3>Employee Form</h3>
-<form #form="ngForm" novalidate>
-  <div class="form-group">
-    <label>First Name:</label>
-    <input
+<form #form="ngForm" (submit)="submitForm(form)" novalidate>
+  <!--
+    For simple required field validation, we do the following:
+      1. add the HTML 'required' attribute to the input
+      2. make sure the field and validation message is inside a Bootstrap 'form-group'
+      3. set the Bootstrap 'was-validated' CSS class to the form-group when we want validation errors to show
+      4. set the Bootstrap 'form-control' CSS class on the input
+      5. add a div with the Bootstrap 'invalid-feedback' CSS class which will
+         show in the case of a validation error.
+
+      Angular will handle the rest
+  -->
+  <div class="form-group"
+    [ngClass]="{'was-validated': firstName.touched}">
+    <label class="form-control-label" for="firstName">First Name:</label>
+    <input #firstName="ngModel"
       type="text"
       class="form-control"
       required
@@ -10,8 +22,10 @@
       [ngModel]="model.firstName"
       (ngModelChange)="firstNameToUpperCase($event)"
     />
+    <div class="invalid-feedback">Please supply a valid first name.</div>
   </div>
-  <div class="form-group">
+
+<div class="form-group">
     <label>Last Name:</label>
     <input
       type="text"
@@ -21,6 +35,23 @@
       [(ngModel)]="model.lastName"
     />
   </div>
+
+<!--
+  Pattern validations behave in a similar way to 'required' validations.
+-->
+<div class="form-group"
+  [ngClass]="{'was-validated': email.touched}">
+  <label class="form-control-label" >Email:</label>
+  <input #email="ngModel"
+    type="text"
+    class="form-control"
+    required
+    pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
+    name="Email"
+    [(ngModel)]="model.email"
+  />
+  <div class="invalid-feedback">Please supply a valid email address.</div>
+</div>
 
   <div class="form-check">
     <input
@@ -50,22 +81,40 @@
     </label>
   </div>
 
-  <div class="form-group">
-    <label>Primary Language:</label>
-    <select class="form-control" name="PrimaryLanguage" [(ngModel)]="model.primaryLanguage">
+  <!--
+    Validations for SELECT elements require some hand-coding:
+
+    1. call a function to validate the field on the (blur) event
+    2. call the same validation function on the (change) event
+    3. add Bootstrap 'form-control' CSS class to the select element
+    4. create a Bootstrap validation message with 'invalid-feedback' CSS class
+    5. place the select and the validation message inside a Bootstrap 'form-group'
+    6. set the 'is-invalid' and 'is-invalid' classes based on the value of a class
+       variable, which is set in the validation function
+  -->
+  <div class="form-group" >
+    <label class="form-control-label">Primary Language:</label>
+    <select class="form-control"
+      #primaryLanguage="ngModel"
+      name="PrimaryLanguage"
+      (blur)="validatePrimaryLanguage(primaryLanguage.control)"
+      (change)="validatePrimaryLanguage(primaryLanguage.control)"
+      [(ngModel)]="model.primaryLanguage"
+      [ngClass]="{'is-invalid': hasPrimaryLanguageError,
+                  'is-valid': !hasPrimaryLanguageError}">
+      <option value="default">Select a language...</option>
       <option *ngFor="let language of languages">{{language}}</option>
     </select>
+    <div class="invalid-feedback">Please select a valid language.</div>
   </div>
 
   <div class="form-group">
     <label>Date Hired:</label>
-    <input type="date" class="form-control" required name="DateHired" [(ngModel)]="dateHired" />
+    <input type="date" class="form-control" name="DateHired" [(ngModel)]="dateHired" />
   </div>
-  <button type="submit" class="btn btn-primary">OK</button>
+  <button type="submit" class="btn btn-primary"
+    [disabled]="form.invalid">OK</button>
 </form>
 
-<!-- {{ form.pristine }} -->
+IsValid: {{ form.valid | json }}
 
-Model: {{ model | json }}
-<br>
-Angular: {{ form.value | json }}
