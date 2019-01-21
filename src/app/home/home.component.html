@@ -101,7 +101,7 @@
       (change)="validatePrimaryLanguage(primaryLanguage.control)"
       [(ngModel)]="model.primaryLanguage"
       [ngClass]="{'is-invalid': hasPrimaryLanguageError,
-                  'is-valid': !hasPrimaryLanguageError}">
+                  'is-valid': !hasPrimaryLanguageError && primaryLanguageValidated}">
       <option value="default">Select a language...</option>
       <option *ngFor="let language of languages">{{language}}</option>
     </select>

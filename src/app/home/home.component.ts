@@ -13,6 +13,7 @@ export class HomeComponent implements OnInit {
   public paymentTypeSalary = PaymentType.Salary;
   public paymentTypeDayRate = PaymentType.DayRate;
   public hasPrimaryLanguageError: boolean;
+  public primaryLanguageValidated: boolean;
   public dateHired: Date;
   public languages = ['English', 'German', 'Spanish', 'Russian'];
   public model = new Employee('', 'Bond', true, PaymentType.DayRate, 'default', '');
@@ -21,6 +22,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.hasPrimaryLanguageError = false;
+    this.primaryLanguageValidated = false;
   }
 
   firstNameToUpperCase(input: string): void {
@@ -33,6 +35,7 @@ export class HomeComponent implements OnInit {
 
   validatePrimaryLanguage(control): void {
     this.hasPrimaryLanguageError = control.value === 'default' ? true : false;
+    this.primaryLanguageValidated = true;
     if (this.hasPrimaryLanguageError) {
       control.setErrors({'NoLanguage': true});
     } else {
@@ -44,7 +47,7 @@ export class HomeComponent implements OnInit {
   submitForm(form: NgForm): void {
     this.validatePrimaryLanguage(form.controls['PrimaryLanguage']);
     if (this.hasPrimaryLanguageError) {
-      // extra logic to inform user of validation error
+      return;
     } else {
       // submit the form
     }
